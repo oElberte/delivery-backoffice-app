@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../../core/ui/helpers/size_extensions.dart';
 import 'menu_button.dart';
@@ -52,6 +53,7 @@ class _LeftMenuBarState extends State<LeftMenuBar> {
                 onPressed: (m) {
                   setState(() {
                     selectedMenu = m;
+                    Modular.to.navigate(menu.route);
                   });
                 },
               );
