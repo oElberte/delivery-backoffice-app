@@ -4,7 +4,7 @@ import 'dart:convert';
 class AuthModel {
   final String accessToken;
 
-  AuthModel({
+  const AuthModel({
     required this.accessToken,
   });
 
