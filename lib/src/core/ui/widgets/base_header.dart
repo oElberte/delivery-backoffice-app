@@ -69,7 +69,7 @@ class BaseHeader extends StatelessWidget {
                 height: 48,
                 width: constraints.maxWidth * .15,
                 child: OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: buttonTap,
                   icon: Icon(
                     Icons.add,
                     size: constraints.maxWidth * 0.02,

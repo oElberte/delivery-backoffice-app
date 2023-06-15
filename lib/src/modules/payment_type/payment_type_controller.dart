@@ -11,6 +11,7 @@ enum PaymentTypeStateStatus {
   loading,
   loaded,
   error,
+  addOrUpdatePayment,
 }
 
 class PaymentTypeController = PaymentTypeControllerBase with _$PaymentTypeController;
@@ -27,6 +28,9 @@ abstract class PaymentTypeControllerBase with Store {
   @readonly
   String? _errorMessage;
 
+  @readonly
+  PaymentTypeModel? _paymentTypeSelected;
+
   PaymentTypeControllerBase(this._paymentTypeRepository);
 
   @action
@@ -40,5 +44,21 @@ abstract class PaymentTypeControllerBase with Store {
       _status = PaymentTypeStateStatus.error;
       _errorMessage = 'Erro ao carregar as formas de pagamento';
     }
+  }
+
+  @action
+  Future<void> addPayment() async {
+    _status = PaymentTypeStateStatus.loading;
+    await Future.delayed(Duration.zero);
+    _paymentTypeSelected = null;
+    _status = PaymentTypeStateStatus.addOrUpdatePayment;
+  }
+
+  @action
+  Future<void> editPayment(PaymentTypeModel payment) async {
+    _status = PaymentTypeStateStatus.loading;
+    await Future.delayed(Duration.zero);
+    _paymentTypeSelected = payment;
+    _status = PaymentTypeStateStatus.addOrUpdatePayment;
   }
 }
