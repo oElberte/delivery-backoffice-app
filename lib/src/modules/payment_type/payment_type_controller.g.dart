@@ -124,6 +124,14 @@ mixin _$PaymentTypeController on PaymentTypeControllerBase, Store {
     return _$editPaymentAsyncAction.run(() => super.editPayment(payment));
   }
 
+  late final _$savePaymentAsyncAction =
+      AsyncAction('PaymentTypeControllerBase.savePayment', context: context);
+
+  @override
+  Future<void> savePayment(PaymentTypeModel model) {
+    return _$savePaymentAsyncAction.run(() => super.savePayment(model));
+  }
+
   late final _$PaymentTypeControllerBaseActionController =
       ActionController(name: 'PaymentTypeControllerBase', context: context);
 

@@ -12,6 +12,7 @@ enum PaymentTypeStateStatus {
   loaded,
   error,
   addOrUpdatePayment,
+  saved,
 }
 
 class PaymentTypeController = PaymentTypeControllerBase with _$PaymentTypeController;
@@ -66,5 +67,18 @@ abstract class PaymentTypeControllerBase with Store {
     await Future.delayed(Duration.zero);
     _paymentTypeSelected = payment;
     _status = PaymentTypeStateStatus.addOrUpdatePayment;
+  }
+
+  @action
+  Future<void> savePayment(PaymentTypeModel model) async {
+    try {
+      _status = PaymentTypeStateStatus.loading;
+      await _paymentTypeRepository.save(model);
+      _status = PaymentTypeStateStatus.saved;
+    } catch (e, s) {
+      log('Erro ao salvar forma de pagamento', error: e, stackTrace: s);
+      _status = PaymentTypeStateStatus.error;
+      _errorMessage = 'Erro ao salvar forma de pagamento';
+    }
   }
 }

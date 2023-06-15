@@ -1,20 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:validatorless/validatorless.dart';
 
 import '../../../../core/ui/helpers/size_extensions.dart';
 import '../../../../core/ui/styles/text_styles.dart';
 import '../../../../models/payment_type_model.dart';
+import '../../payment_type_controller.dart';
 
 class PaymentTypeFormModal extends StatefulWidget {
+  final PaymentTypeController controller;
   final PaymentTypeModel? model;
 
-  const PaymentTypeFormModal({super.key, required this.model});
+  const PaymentTypeFormModal({
+    super.key,
+    required this.model,
+    required this.controller,
+  });
 
   @override
   State<PaymentTypeFormModal> createState() => _PaymentTypeFormModalState();
 }
 
 class _PaymentTypeFormModalState extends State<PaymentTypeFormModal> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameEC = TextEditingController();
+  final _acronymEC = TextEditingController();
+  var enabled = false;
+
   void _closeModal() => Navigator.of(context).pop();
+
+  @override
+  void initState() {
+    super.initState();
+    final paymentModel = widget.model;
+
+    if(paymentModel != null) {
+      _nameEC.text = paymentModel.name;
+      _acronymEC.text = paymentModel.acronym;
+      enabled = paymentModel.enabled;
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameEC.dispose();
+    _acronymEC.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +56,7 @@ class _PaymentTypeFormModalState extends State<PaymentTypeFormModal> {
         width: screenWidth * (screenWidth > 1200 ? .5 : .7),
         padding: const EdgeInsets.all(30),
         child: Form(
+          key: _formKey,
           child: Column(
             children: [
               Stack(
@@ -48,12 +80,16 @@ class _PaymentTypeFormModalState extends State<PaymentTypeFormModal> {
               ),
               const SizedBox(height: 20),
               TextFormField(
+                controller: _nameEC,
+                validator: Validatorless.required('Nome obrigatório'),
                 decoration: const InputDecoration(
                   label: Text('Nome'),
                 ),
               ),
               const SizedBox(height: 20),
               TextFormField(
+                controller: _acronymEC,
+                validator: Validatorless.required('Sigla obrigatória'),
                 decoration: const InputDecoration(
                   label: Text('Sigla'),
                 ),
@@ -66,8 +102,12 @@ class _PaymentTypeFormModalState extends State<PaymentTypeFormModal> {
                     style: context.textStyles.textRegular,
                   ),
                   Switch(
-                    value: false,
-                    onChanged: (value) {},
+                    value: enabled,
+                    onChanged: (value) {
+                      setState(() {
+                        enabled = value;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -79,7 +119,7 @@ class _PaymentTypeFormModalState extends State<PaymentTypeFormModal> {
                     height: 60,
                     padding: const EdgeInsets.all(8),
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: _closeModal,
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(
                           color: Colors.red,
@@ -97,7 +137,23 @@ class _PaymentTypeFormModalState extends State<PaymentTypeFormModal> {
                     height: 60,
                     padding: const EdgeInsets.all(8),
                     child: ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        final isValid = _formKey.currentState?.validate() ?? false;
+
+                        if (isValid) {
+                          final name = _nameEC.text;
+                          final acronym = _acronymEC.text;
+
+                          widget.controller.savePayment(
+                            PaymentTypeModel(
+                              id: widget.model?.id,
+                              name: name,
+                              acronym: acronym,
+                              enabled: enabled,
+                            ),
+                          );
+                        }
+                      },
                       icon: const Icon(Icons.save),
                       label: const Text('Salvar'),
                     ),
