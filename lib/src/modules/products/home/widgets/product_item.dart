@@ -3,9 +3,15 @@ import 'package:flutter/material.dart';
 import '../../../../core/env/env.dart';
 import '../../../../core/extensions/formatter_extension.dart';
 import '../../../../core/ui/styles/text_styles.dart';
+import '../../../../models/product_model.dart';
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({super.key});
+  final ProductModel product;
+
+  const ProductItem({
+    super.key,
+    required this.product,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +34,7 @@ class ProductItem extends StatelessWidget {
                   ),
                   image: DecorationImage(
                     image: NetworkImage(
-                      '${Env.instance.get('backend_base_url')}/storage/mclumygt_jrs_1682022574279.jpg',
+                      '${Env.instance.get('backend_base_url')}${product.image}',
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -36,9 +42,14 @@ class ProductItem extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(15),
-                child: Text(
-                  'X-TUDO',
-                  style: context.textStyles.textMedium,
+                child: Tooltip(
+                  message: product.name,
+                  child: Text(
+                    product.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textStyles.textMedium,
+                  ),
                 ),
               ),
               Row(
@@ -46,7 +57,7 @@ class ProductItem extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(15),
-                    child: Text(100.50.currencyPTBR),
+                    child: Text(product.price.currencyPTBR),
                   ),
                   TextButton(
                     onPressed: () {},
