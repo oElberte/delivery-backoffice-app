@@ -32,6 +32,9 @@ abstract class ProductDetailControllerBase with Store {
   @readonly
   String? _imagePath;
 
+  @readonly
+  ProductModel? _productModel;
+
   ProductDetailControllerBase(this._productRepository);
 
   @action
@@ -46,11 +49,12 @@ abstract class ProductDetailControllerBase with Store {
     try {
       _status = ProductDetailStateStatus.loading;
       final productModel = ProductModel(
+        id: _productModel?.id,
         name: name,
         description: description,
         price: price,
         image: _imagePath!,
-        enabled: true,
+        enabled: _productModel?.enabled ?? true,
       );
 
       await _productRepository.save(productModel);
@@ -58,6 +62,24 @@ abstract class ProductDetailControllerBase with Store {
     } catch (e, s) {
       _status = ProductDetailStateStatus.error;
       _errorMessage = 'Erro ao salvar o produto';
+      log(_errorMessage!, error: e, stackTrace: s);
+    }
+  }
+
+  @action
+  Future<void> loadProduct(int? id) async {
+    try {
+      _status = ProductDetailStateStatus.loading;
+      _productModel = null;
+      _imagePath = null;
+      if (id != null) {
+        _productModel = await _productRepository.getProduct(id);
+        _imagePath = _productModel!.image;
+      }
+      _status = ProductDetailStateStatus.loaded;
+    } catch (e, s) {
+      _status = ProductDetailStateStatus.errorLoadProduct;
+      _errorMessage = 'Erro ao carregar produto para edição';
       log(_errorMessage!, error: e, stackTrace: s);
     }
   }

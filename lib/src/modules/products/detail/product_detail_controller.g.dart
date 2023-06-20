@@ -63,6 +63,24 @@ mixin _$ProductDetailController on ProductDetailControllerBase, Store {
     });
   }
 
+  late final _$_productModelAtom =
+      Atom(name: 'ProductDetailControllerBase._productModel', context: context);
+
+  ProductModel? get productModel {
+    _$_productModelAtom.reportRead();
+    return super._productModel;
+  }
+
+  @override
+  ProductModel? get _productModel => productModel;
+
+  @override
+  set _productModel(ProductModel? value) {
+    _$_productModelAtom.reportWrite(value, super._productModel, () {
+      super._productModel = value;
+    });
+  }
+
   late final _$uploadImageProductAsyncAction = AsyncAction(
       'ProductDetailControllerBase.uploadImageProduct',
       context: context);
@@ -79,6 +97,14 @@ mixin _$ProductDetailController on ProductDetailControllerBase, Store {
   @override
   Future<void> save(String name, double price, String description) {
     return _$saveAsyncAction.run(() => super.save(name, price, description));
+  }
+
+  late final _$loadProductAsyncAction =
+      AsyncAction('ProductDetailControllerBase.loadProduct', context: context);
+
+  @override
+  Future<void> loadProduct(int? id) {
+    return _$loadProductAsyncAction.run(() => super.loadProduct(id));
   }
 
   @override

@@ -7,6 +7,7 @@ import 'package:mobx/mobx.dart';
 import 'package:validatorless/validatorless.dart';
 
 import '../../../core/env/env.dart';
+import '../../../core/extensions/formatter_extension.dart';
 import '../../../core/ui/helpers/loader.dart';
 import '../../../core/ui/helpers/messages.dart';
 import '../../../core/ui/helpers/size_extensions.dart';
@@ -45,6 +46,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with Loader, Me
             showLoader();
             break;
           case ProductDetailStateStatus.loaded:
+            final model = controller.productModel!;
+            nameEC.text = model.name;
+            priceEC.text = model.price.currencyPTBR;
+            descriptionEC.text = model.description;
             hideLoader();
             break;
           case ProductDetailStateStatus.error:
@@ -52,6 +57,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with Loader, Me
             showError(controller.errorMessage!);
             break;
           case ProductDetailStateStatus.errorLoadProduct:
+            hideLoader();
+            showError(controller.errorMessage!);
+            Navigator.of(context).pop();
             break;
           case ProductDetailStateStatus.deleted:
             break;
@@ -64,6 +72,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with Loader, Me
             break;
         }
       });
+      controller.loadProduct(widget.productId);
     });
   }
 
