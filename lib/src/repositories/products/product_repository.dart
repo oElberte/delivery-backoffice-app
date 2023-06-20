@@ -6,6 +6,6 @@ abstract class ProductRepository {
   Future<List<ProductModel>> findAll(String? name);
   Future<ProductModel> getProduct(int id);
   Future<void> save(ProductModel product);
-  Future<String> uploadImageProduct(Uint8List file, String filename);
+  Future<String> uploadImageProduct(Uint8List file, String fileName);
   Future<void> deleteProduct(int id);
 }
