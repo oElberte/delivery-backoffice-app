@@ -83,4 +83,22 @@ abstract class ProductDetailControllerBase with Store {
       log(_errorMessage!, error: e, stackTrace: s);
     }
   }
+
+  Future<void> deleteProduct(int id) async {
+    try {
+      _status = ProductDetailStateStatus.loading;
+      if (_productModel != null && _productModel!.id != null) {
+        await _productRepository.deleteProduct(_productModel!.id!);
+        _status = ProductDetailStateStatus.deleted;
+      }
+      await Future.delayed(Duration.zero);
+      _status = ProductDetailStateStatus.error;
+      _errorMessage = 'Produto não cadastrado, não é permitido deletar o produto';
+    } catch (e, s) {
+      _status = ProductDetailStateStatus.error;
+      _errorMessage = 'Erro ao deletar produto';
+      log(_errorMessage!, error: e, stackTrace: s);
+    }
+
+  }
 }
