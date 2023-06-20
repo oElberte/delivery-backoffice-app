@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:mobx/mobx.dart';
+import 'package:validatorless/validatorless.dart';
 
 import '../../../core/env/env.dart';
+import '../../../core/ui/helpers/loader.dart';
+import '../../../core/ui/helpers/messages.dart';
 import '../../../core/ui/helpers/size_extensions.dart';
 import '../../../core/ui/helpers/upload_html_helper.dart';
 import '../../../core/ui/styles/text_styles.dart';
@@ -22,8 +26,55 @@ class ProductDetailsPage extends StatefulWidget {
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
 }
 
-class _ProductDetailsPageState extends State<ProductDetailsPage> {
+class _ProductDetailsPageState extends State<ProductDetailsPage> with Loader, Messages {
   final controller = Modular.get<ProductDetailController>();
+  final formKey = GlobalKey<FormState>();
+  final nameEC = TextEditingController();
+  final priceEC = TextEditingController();
+  final descriptionEC = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      reaction((_) => controller.status, (status) {
+        switch (status) {
+          case ProductDetailStateStatus.initial:
+            break;
+          case ProductDetailStateStatus.loading:
+            showLoader();
+            break;
+          case ProductDetailStateStatus.loaded:
+            hideLoader();
+            break;
+          case ProductDetailStateStatus.error:
+            hideLoader();
+            showError(controller.errorMessage!);
+            break;
+          case ProductDetailStateStatus.errorLoadProduct:
+            break;
+          case ProductDetailStateStatus.deleted:
+            break;
+          case ProductDetailStateStatus.uploaded:
+            hideLoader();
+            break;
+          case ProductDetailStateStatus.saved:
+            hideLoader();
+            Navigator.pop(context);
+            break;
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    nameEC.dispose();
+    priceEC.dispose();
+    descriptionEC.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final widthButtonAction = context.percentWidth(.4);
@@ -33,6 +84,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       padding: const EdgeInsets.all(40),
       child: SingleChildScrollView(
         child: Form(
+          key: formKey,
           child: Column(
             children: [
               Row(
@@ -84,7 +136,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           ),
                           child: Observer(
                             builder: (_) {
-                              return Text('${controller.imagePath == null ? 'Adicionar' : 'Alterar'} foto');
+                              return Text('${controller.imagePath == null ? 'Adicionar' : 'Alterar'} imagem');
                             },
                           ),
                         ),
@@ -95,10 +147,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     child: Column(
                       children: [
                         TextFormField(
+                          controller: nameEC,
+                          validator: Validatorless.required('Nome obrigatório'),
                           decoration: const InputDecoration(label: Text('Nome')),
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
+                          controller: priceEC,
+                          validator: Validatorless.required('Preço obrigatório'),
                           decoration: const InputDecoration(label: Text('Preço')),
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
@@ -115,6 +171,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 minLines: 10,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
+                controller: descriptionEC,
+                validator: Validatorless.required('Descrição obrigatória'),
                 decoration: const InputDecoration(
                   label: Text('Descrição'),
                   alignLabelWithHint: true,
@@ -150,7 +208,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         width: widthButtonAction / 2,
                         height: 60,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            final isValid = formKey.currentState?.validate() ?? false;
+
+                            if (isValid) {
+                              if (controller.imagePath == null) {
+                                showWarning('Imagem obrigatória, por favor adicione uma imagem');
+                                return;
+                              }
+                            }
+                            controller.save(
+                              nameEC.text,
+                              UtilBrasilFields.converterMoedaParaDouble(priceEC.text),
+                              descriptionEC.text,
+                            );
+                          },
                           child: Text(
                             'Salvar',
                             style: context.textStyles.textBold,

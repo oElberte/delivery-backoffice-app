@@ -73,6 +73,14 @@ mixin _$ProductDetailController on ProductDetailControllerBase, Store {
         .run(() => super.uploadImageProduct(file, fileName));
   }
 
+  late final _$saveAsyncAction =
+      AsyncAction('ProductDetailControllerBase.save', context: context);
+
+  @override
+  Future<void> save(String name, double price, String description) {
+    return _$saveAsyncAction.run(() => super.save(name, price, description));
+  }
+
   @override
   String toString() {
     return '''
