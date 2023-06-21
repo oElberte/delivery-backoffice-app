@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/ui/helpers/size_extensions.dart';
-import 'menu/menu_bar.dart';
+import 'menu/left_menu_bar.dart';
 
 class BaseLayout extends StatelessWidget {
   final Widget body;
