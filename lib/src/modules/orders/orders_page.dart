@@ -5,6 +5,7 @@ import 'package:mobx/mobx.dart';
 
 import '../../core/ui/helpers/loader.dart';
 import '../../core/ui/helpers/messages.dart';
+import 'detail/order_detail_modal.dart';
 import 'orders_controller.dart';
 import 'widgets/order_header.dart';
 import 'widgets/order_item.dart';
@@ -38,6 +39,10 @@ class _OrderPageState extends State<OrderPage> with Loader, Messages {
             hideLoader();
             showError(controller.errorMessage ?? 'Erro interno');
             break;
+          case OrdersStateStatus.showDetailModal:
+            hideLoader();
+            showOrderDetail();
+            break;
         }
       });
       controller.findOrders();
@@ -48,6 +53,15 @@ class _OrderPageState extends State<OrderPage> with Loader, Messages {
   void dispose() {
     statusDisposer();
     super.dispose();
+  }
+
+  void showOrderDetail() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const OrderDetailModal();
+      },
+    );
   }
 
   @override

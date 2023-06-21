@@ -81,12 +81,38 @@ mixin _$OrdersController on OrdersControllerBase, Store {
     });
   }
 
+  late final _$_selectedModelAtom =
+      Atom(name: 'OrdersControllerBase._selectedModel', context: context);
+
+  OrderModel? get selectedModel {
+    _$_selectedModelAtom.reportRead();
+    return super._selectedModel;
+  }
+
+  @override
+  OrderModel? get _selectedModel => selectedModel;
+
+  @override
+  set _selectedModel(OrderModel? value) {
+    _$_selectedModelAtom.reportWrite(value, super._selectedModel, () {
+      super._selectedModel = value;
+    });
+  }
+
   late final _$findOrdersAsyncAction =
       AsyncAction('OrdersControllerBase.findOrders', context: context);
 
   @override
   Future<void> findOrders() {
     return _$findOrdersAsyncAction.run(() => super.findOrders());
+  }
+
+  late final _$showDetailModalAsyncAction =
+      AsyncAction('OrdersControllerBase.showDetailModal', context: context);
+
+  @override
+  Future<void> showDetailModal(OrderModel model) {
+    return _$showDetailModalAsyncAction.run(() => super.showDetailModal(model));
   }
 
   @override

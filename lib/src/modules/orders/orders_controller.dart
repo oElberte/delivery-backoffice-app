@@ -12,6 +12,7 @@ enum OrdersStateStatus {
   loading,
   loaded,
   error,
+  showDetailModal,
 }
 
 class OrdersController = OrdersControllerBase with _$OrdersController;
@@ -33,6 +34,9 @@ abstract class OrdersControllerBase with Store {
   @readonly
   var _orders = <OrderModel>[];
 
+  @readonly
+  OrderModel? _selectedModel;
+
   OrdersControllerBase(this._orderRepository) {
     final now = DateTime.now();
     _today = DateTime(now.year, now.month, now.day);
@@ -50,5 +54,12 @@ abstract class OrdersControllerBase with Store {
       _status = OrdersStateStatus.error;
       log(_errorMessage!, error: e, stackTrace: s);
     }
+  }
+
+  @action
+  Future<void> showDetailModal(OrderModel model) async {
+    _status = OrdersStateStatus.loading;
+    await Future.delayed(Duration.zero);
+    _status = OrdersStateStatus.showDetailModal;
   }
 }
