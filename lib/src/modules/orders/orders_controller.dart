@@ -15,6 +15,7 @@ enum OrdersStateStatus {
   loaded,
   error,
   showDetailModal,
+  statusChanged,
 }
 
 class OrdersController = OrdersControllerBase with _$OrdersController;
@@ -67,5 +68,18 @@ abstract class OrdersControllerBase with Store {
     _status = OrdersStateStatus.loading;
     _orderSelected = await _getOrderById(model);
     _status = OrdersStateStatus.showDetailModal;
+  }
+
+  @action
+  Future<void> changeStatus(OrderStatus status) async {
+    try {
+      _status = OrdersStateStatus.loading;
+      await _orderRepository.changeStatus(_orderSelected!.id, status);
+      _status = OrdersStateStatus.statusChanged;
+    } catch (e, s) {
+      _errorMessage = 'Erro ao alterar status do pedido';
+      _status = OrdersStateStatus.error;
+      log(_errorMessage!, error: e, stackTrace: s);
+    }
   }
 }

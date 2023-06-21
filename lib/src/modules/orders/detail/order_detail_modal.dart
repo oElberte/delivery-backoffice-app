@@ -9,7 +9,7 @@ import 'widgets/order_bottom_bar.dart';
 import 'widgets/order_info_tile.dart';
 import 'widgets/order_product_item.dart';
 
-class OrderDetailModal extends StatelessWidget {
+class OrderDetailModal extends StatefulWidget {
   final OrdersController controller;
   final OrderDto order;
 
@@ -20,10 +20,15 @@ class OrderDetailModal extends StatelessWidget {
   });
 
   @override
+  State<OrderDetailModal> createState() => _OrderDetailModalState();
+}
+
+class _OrderDetailModalState extends State<OrderDetailModal> {
+  void closeModal() => Navigator.pop(context);
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = context.screenWidth;
-
-    void closeModal() => Navigator.pop(context);
 
     return Material(
       color: Colors.black26,
@@ -67,15 +72,15 @@ class OrderDetailModal extends StatelessWidget {
                     ),
                     const SizedBox(width: 20),
                     Text(
-                      'Elberte Plínio',
+                      widget.order.user.name,
                       style: context.textStyles.textRegular,
                     ),
                   ],
                 ),
                 const Divider(),
-                ...List.generate(3, (index) => index)
+                ...widget.order.orderProducts
                     .map(
-                      (e) => const OrderProductItem(),
+                      (op) => OrderProductItem(orderProduct: op),
                     )
                     .toList(),
                 const SizedBox(height: 10),
@@ -89,7 +94,9 @@ class OrderDetailModal extends StatelessWidget {
                         style: context.textStyles.textExtraBold.copyWith(fontSize: 18),
                       ),
                       Text(
-                        200.0.currencyPTBR,
+                        widget.order.orderProducts
+                            .fold<double>(0.0, (pV, e) => pV + (e.amount * e.totalPrice))
+                            .currencyPTBR,
                         style: context.textStyles.textExtraBold.copyWith(fontSize: 18),
                       ),
                     ],
@@ -98,15 +105,18 @@ class OrderDetailModal extends StatelessWidget {
                 const Divider(),
                 OrderInfoTile(
                   label: 'Endereço de entrega',
-                  info: 'Rua Silva Jardim, 775',
+                  info: widget.order.address,
                 ),
                 const Divider(),
                 OrderInfoTile(
                   label: 'Forma de pagamento',
-                  info: 'Cartão de Crédito',
+                  info: widget.order.paymentType.name,
                 ),
                 const SizedBox(height: 10),
-                OrderBottomBar(),
+                OrderBottomBar(
+                  controller: widget.controller,
+                  order: widget.order,
+                ),
               ],
             ),
           ),
