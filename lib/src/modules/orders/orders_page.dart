@@ -21,6 +21,19 @@ class _OrderPageState extends State<OrderPage> with Loader, Messages {
   final controller = Modular.get<OrdersController>();
   late final ReactionDisposer statusDisposer;
 
+  void showOrderDetail() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return OrderDetailModal(
+          key: GlobalKey(),
+          controller: controller,
+          order: controller.orderSelected!,
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -60,18 +73,6 @@ class _OrderPageState extends State<OrderPage> with Loader, Messages {
     super.dispose();
   }
 
-  void showOrderDetail() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return OrderDetailModal(
-          controller: controller,
-          order: controller.orderSelected!,
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -93,6 +94,7 @@ class _OrderPageState extends State<OrderPage> with Loader, Messages {
                       ),
                       itemBuilder: (context, index) {
                         return OrderItem(
+                          controller: controller,
                           order: controller.orders[index],
                         );
                       },

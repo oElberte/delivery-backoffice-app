@@ -24,8 +24,6 @@ class OrderDetailModal extends StatefulWidget {
 }
 
 class _OrderDetailModalState extends State<OrderDetailModal> {
-  void closeModal() => Navigator.pop(context);
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = context.screenWidth;
@@ -57,7 +55,7 @@ class _OrderDetailModalState extends State<OrderDetailModal> {
                     Align(
                       alignment: Alignment.topRight,
                       child: IconButton(
-                        onPressed: closeModal,
+                        onPressed: Navigator.of(context).pop,
                         icon: const Icon(Icons.close),
                       ),
                     ),

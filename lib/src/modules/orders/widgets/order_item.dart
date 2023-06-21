@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../../core/ui/styles/text_styles.dart';
 import '../../../models/orders/order_model.dart';
 import '../orders_controller.dart';
 
 class OrderItem extends StatelessWidget {
+  final OrdersController controller;
   final OrderModel order;
 
-  const OrderItem({super.key, required this.order});
+  const OrderItem({super.key, required this.controller, required this.order});
 
   @override
   Widget build(BuildContext context) {
     final textStyles = context.textStyles;
     return InkWell(
-      onTap: () => context.read<OrdersController>().showDetailModal(order),
+      onTap: () => controller.showDetailModal(order),
       child: Row(
         children: [
           Expanded(
