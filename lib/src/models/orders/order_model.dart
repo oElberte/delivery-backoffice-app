@@ -13,7 +13,7 @@ class OrderModel {
   final String cpf;
   final int paymentTypeId;
 
-  const OrderModel({
+  OrderModel({
     required this.id,
     required this.date,
     required this.status,
@@ -25,7 +25,7 @@ class OrderModel {
   });
 
   Map<String, dynamic> toMap() {
-    return {
+    return <String, dynamic>{
       'id': id,
       'date': date.toIso8601String(),
       'status': status.acronym,
@@ -45,7 +45,7 @@ class OrderModel {
       orderProducts: List<OrderProductModel>.from(map['products']?.map((x) => OrderProductModel.fromMap(x))),
       userId: map['user_id']?.toInt() ?? 0,
       address: map['address'] ?? '',
-      cpf: map['CPF'] ?? '',
+      cpf: map['cpf'] ?? '',
       paymentTypeId: map['payment_method_id']?.toInt() ?? 0,
     );
   }

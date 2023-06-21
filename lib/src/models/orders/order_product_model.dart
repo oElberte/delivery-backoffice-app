@@ -5,14 +5,14 @@ class OrderProductModel {
   final int amount;
   final double totalPrice;
 
-  const OrderProductModel({
+   OrderProductModel({
     required this.productId,
     required this.amount,
     required this.totalPrice,
   });
 
   Map<String, dynamic> toMap() {
-    return {
+    return <String, dynamic>{
       'id': productId,
       'amount': amount,
       'total_price': totalPrice,
