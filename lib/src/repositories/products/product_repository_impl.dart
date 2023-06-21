@@ -82,10 +82,10 @@ class ProductRepositoryImpl extends ProductRepository {
   }
 
   @override
-  Future<String> uploadImageProduct(Uint8List file, String filename) async {
+  Future<String> uploadImageProduct(Uint8List file, String fileName) async {
     try {
       final formData = FormData.fromMap({
-        'file': MultipartFile.fromBytes(file, filename: filename),
+        'file': MultipartFile.fromBytes(file, filename: fileName),
       });
 
       final response = await _dio.auth().post('/uploads', data: formData);

@@ -14,7 +14,7 @@ enum Menu {
   ),
 
   orders(
-    route: '/order/',
+    route: '/orders/',
     assetIcon: 'order_ico.png',
     assetIconSelected: 'order_ico_selected.png',
     label: 'Pedidos do dia',

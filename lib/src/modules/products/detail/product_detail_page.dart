@@ -33,12 +33,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with Loader, Me
   final nameEC = TextEditingController();
   final priceEC = TextEditingController();
   final descriptionEC = TextEditingController();
+  late ReactionDisposer reactionDisposer;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      reaction((_) => controller.status, (status) {
+      reactionDisposer = reaction((_) => controller.status, (status) {
         switch (status) {
           case ProductDetailStateStatus.initial:
             break;
@@ -80,6 +81,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with Loader, Me
     nameEC.dispose();
     priceEC.dispose();
     descriptionEC.dispose();
+    reactionDisposer();
     super.dispose();
   }
 
