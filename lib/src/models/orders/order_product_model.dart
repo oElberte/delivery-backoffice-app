@@ -5,7 +5,7 @@ class OrderProductModel {
   final int amount;
   final double totalPrice;
 
-   OrderProductModel({
+  const OrderProductModel({
     required this.productId,
     required this.amount,
     required this.totalPrice,

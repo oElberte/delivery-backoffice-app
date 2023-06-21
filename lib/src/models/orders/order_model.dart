@@ -13,7 +13,7 @@ class OrderModel {
   final String cpf;
   final int paymentTypeId;
 
-  OrderModel({
+  const OrderModel({
     required this.id,
     required this.date,
     required this.status,
