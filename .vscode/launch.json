@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "delivery_backoffice_dw10",
+            "name": "delivery_backoffice",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "delivery_backoffice_dw10 (profile mode)",
+            "name": "delivery_backoffice (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "delivery_backoffice_dw10 (release mode)",
+            "name": "delivery_backoffice (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
